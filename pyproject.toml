@@ -1,0 +1,17 @@
+[project]
+name = "chatbot-for-tourism"
+version = "0.1.0"
+description = "Ghana Tourism Guide Chatbot - your local guide to travelling in Ghana"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "beautifulsoup4>=4.15.0",
+    "chromadb>=1.5.9",
+    "gradio>=6.19.0",
+    "httpx>=0.28.1",
+    "ipykernel>=7.3.0",
+    "jupyter>=1.1.1",
+    "openai>=2.43.0",
+    "pypdf>=6.14.2",
+    "python-dotenv>=1.2.2",
+]
