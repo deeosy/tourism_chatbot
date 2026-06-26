@@ -15,7 +15,7 @@ def run_ui():
 
     with gr.Blocks(
         title="Ghana Tourism Guide",
-        theme=gr.themes.Soft(primary_hue="orange", secondary_hue="green"),
+        # theme=gr.themes.Soft(primary_hue="orange", secondary_hue="green"),
     ) as demo:
         gr.Markdown(
             "# Akwaaba! - Your Ghana Travel Guide\n"
@@ -26,7 +26,7 @@ def run_ui():
 
         chatbot = gr.ChatInterface(
             fn=chat_fn,
-            type="messages",
+            # type="messages",
             title=None,
             description=None,
             examples=[
@@ -38,7 +38,7 @@ def run_ui():
             ],
         )
 
-    demo.launch(server_name="127.0.0.1", server_port=7860)
+    demo.launch(server_name="127.0.0.1", server_port=7860, theme=gr.themes.Soft(primary_hue="orange", secondary_hue="green",),)
 
 
 def main():
