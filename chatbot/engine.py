@@ -2,10 +2,14 @@ import re
 from difflib import SequenceMatcher
 
 
+# Simple string similarity used for fuzzy matching (currently available but not heavily used)
 def similarity(a: str, b: str) -> float:
     return SequenceMatcher(None, a.lower(), b.lower()).ratio()
 
 
+# ----- INTENTS -----
+# Simple regex-based patterns for common short interactions.
+# These are checked first since they're fast and have predictable answers.
 INTENTS = {
     "greeting": {
         "patterns": [
@@ -39,6 +43,9 @@ INTENTS = {
     },
 }
 
+# ----- REGIONS -----
+# Each region has keywords for matching, a main response, and optional subtopics.
+# The matching logic picks the region with the most keyword hits.
 REGIONS = {
     "accra": {
         "keywords": [
@@ -230,6 +237,9 @@ REGIONS = {
     },
 }
 
+# ----- TOPICS -----
+# General knowledge topics (non-region-specific).
+# The "itinerary" topic has is_itinerary=True so it's handled by a separate function.
 TOPICS = {
     "food": {
         "keywords": [
@@ -430,10 +440,11 @@ TOPICS = {
             "tour",
         ],
         "response": None,
-        "is_itinerary": True,
+        "is_itinerary": True,  # flag: handled by get_itinerary_reply() instead
     },
 }
 
+# Default advice shown when no specific trip details are given
 ITINERARY_ADVICE = (
     "I'd love to help plan your Ghana itinerary! To give you the best advice, I need:\n\n"
     "1. **How many days** do you have?\n"
@@ -450,6 +461,8 @@ ITINERARY_ADVICE = (
 )
 
 
+# Generates a personalised itinerary based on the user's message.
+# Extracts day count, number of people, and interests from the text.
 def get_itinerary_reply(message: str) -> str:
     days = re.findall(r"(\d+)\s*days?", message.lower())
     people = re.findall(r"(\d+)\s*(people|persons?|of us|travellers?)", message.lower())
@@ -478,11 +491,9 @@ def get_itinerary_reply(message: str) -> str:
 
     if day_count:
         if day_count <= 3:
-            base = (
+            return (
                 f"With {day_count} days, I'd focus on **Accra and Cape Coast** - "
                 "they're close enough to avoid wasting time on the road.\n\n"
-            )
-            return base + (
                 "**Day 1: Accra** - arrive, settle in, explore Jamestown and Osu\n"
                 "**Day 2: Cape Coast** - Cape Coast Castle + Kakum canopy walkway\n"
                 "**Day 3: Accra** - Labadi Beach, Kwame Nkrumah Mausoleum, departure\n\n"
@@ -511,6 +522,8 @@ def get_itinerary_reply(message: str) -> str:
     return ITINERARY_ADVICE
 
 
+# Handles practical-advice topics (cost, SIM cards, etc.)
+# These are checked separately from the main TOPICS because they need dynamic info.
 def get_practical_reply(message: str) -> str | None:
     money_keywords = [
         "cost",

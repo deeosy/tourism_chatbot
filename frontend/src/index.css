@@ -1,19 +1,33 @@
+/*
+  Tailwind CSS v4 entry point.
+  v4 uses @import instead of the traditional @tailwind directives.
+  All custom theme tokens are defined in the @theme block below.
+*/
 @import "tailwindcss";
 
+/*
+  Custom design tokens for the Ghana Tourism Guide.
+  These become Tailwind utility classes automatically, e.g.:
+    bg-surface  → background-color: var(--color-surface)
+    text-primary → color: var(--color-primary)
+    border-outline-variant → border-color: var(--color-outline-variant)
+
+  Color palette (earthy greens, warm golds, neutral off-whites):
+*/
 @theme {
-  --color-primary: #1a5632;
-  --color-primary-variant: #2d7a4b;
-  --color-secondary: #f5a623;
-  --color-secondary-variant: #d4891a;
-  --color-tertiary: #e85d3a;
-  --color-surface: #faf9f7;
-  --color-surface-alt: #f0eee9;
-  --color-on-surface: #1c1917;
-  --color-on-surface-variant: #57534e;
-  --color-outline-variant: #d6d3cc;
-  --color-inverse-surface: #292524;
-  --color-inverse-on-surface: #f5f5f4;
-  --color-text-secondary: #78716c;
+  --color-primary: #1a5632;              /* deep forest green – used for buttons, headers */
+  --color-primary-variant: #2d7a4b;       /* lighter green – hover states */
+  --color-secondary: #f5a623;             /* warm gold – CTA buttons */
+  --color-secondary-variant: #d4891a;     /* darker gold – hover states */
+  --color-tertiary: #e85d3a;              /* accent orange – sparingly */
+  --color-surface: #faf9f7;               /* off-white page background */
+  --color-surface-alt: #f0eee9;           /* slightly darker surface for hover cards */
+  --color-on-surface: #1c1917;            /* near-black text on surfaces */
+  --color-on-surface-variant: #57534e;    /* muted body text */
+  --color-outline-variant: #d6d3cc;       /* subtle borders */
+  --color-inverse-surface: #292524;       /* dark background (CTA section) */
+  --color-inverse-on-surface: #f5f5f4;    /* light text on dark backgrounds */
+  --color-text-secondary: #78716c;        /* subdued text (footer, labels) */
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 }
 

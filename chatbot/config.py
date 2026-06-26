@@ -3,6 +3,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+# Load environment variables from .env (OPENAI_API_KEY, OPENAI_MODEL)
 load_dotenv()
 
 
@@ -10,6 +11,7 @@ def get_config() -> dict:
     api_key = os.getenv("OPENAI_API_KEY", "")
     model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
+    # is_configured is True only if a real API key is present
     is_configured = bool(api_key) and api_key != "your-openai-api-key-here"
 
     return {
@@ -19,6 +21,8 @@ def get_config() -> dict:
     }
 
 
+# Reads the skill.md file which contains the chatbot's persona/instructions.
+# The front matter (between --- delimiters) is stripped, leaving just the guide text.
 def load_system_prompt() -> str:
     skill_path = Path(__file__).resolve().parent.parent / "skill.md"
     if skill_path.exists():

@@ -2,7 +2,7 @@ from openai import AsyncOpenAI
 from .config import get_config, load_system_prompt
 from .rag import query_knowledge_base
 
-
+# Module-level cache for the OpenAI client and system prompt
 _system_prompt: str | None = None
 _client: AsyncOpenAI | None = None
 
@@ -16,6 +16,8 @@ def _ensure_llm():
         _system_prompt = load_system_prompt()
 
 
+# Sends the user's message to OpenAI along with relevant RAG context.
+# Returns the LLM's response, or None if the API is not configured.
 async def generate_llm_response(message: str) -> str | None:
     _ensure_llm()
     if _client is None:
@@ -23,6 +25,7 @@ async def generate_llm_response(message: str) -> str | None:
 
     cfg = get_config()
 
+    # Retrieve relevant chunks from the ChromaDB knowledge base
     rag_context = await query_knowledge_base(message, n_results=5)
     context_block = ""
     if rag_context:
@@ -34,7 +37,9 @@ async def generate_llm_response(message: str) -> str | None:
         resp = await _client.chat.completions.create(
             model=cfg["model"],
             messages=[
+                # system prompt sets the chatbot persona (from skill.md)
                 {"role": "system", "content": _system_prompt},
+                # user message + RAG context appended as extra info
                 {"role": "user", "content": message + context_block},
             ],
             temperature=0.7,

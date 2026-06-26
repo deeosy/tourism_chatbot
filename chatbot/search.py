@@ -2,6 +2,9 @@ import httpx
 from urllib.parse import quote_plus
 
 
+# Searches DuckDuckGo's lite (text-only) HTML page for the given query.
+# Returns up to 3 result snippets, or None if the search fails.
+# This is a fallback for when the vector store and LLM don't have an answer.
 async def search_web(query: str) -> str | None:
     try:
         async with httpx.AsyncClient(timeout=15.0, follow_redirects=True) as client:
@@ -20,6 +23,7 @@ async def search_web(query: str) -> str | None:
 
             import re
 
+            # Try parsing the lite HTML format (two possible class names)
             snippets = re.findall(
                 r'class="result-snippet">(.*?)</(?:a|td)>',
                 resp.text,
