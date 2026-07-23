@@ -1,0 +1,10 @@
+# Netlify build environment (Vite)
+# Netlify automatically detects Vite and sets NODE_VERSION if not specified.
+
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"

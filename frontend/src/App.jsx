@@ -49,8 +49,9 @@ const sections = [
 ]
 
 // URL of the Python/Gradio backend streaming endpoint.
-// The backend runs on localhost:7860 and exposes a function called "chat_fn".
-const API_BASE = "http://127.0.0.1:7860/gradio_api/call/chat_fn"
+// VITE_API_URL is set in .env for local dev, and in Netlify dashboard for production.
+// Falls back to localhost:7860 when running locally without a .env file.
+const API_BASE = `${import.meta.env.VITE_API_URL || "http://127.0.0.1:7860"}/gradio_api/call/chat_fn`
 
 // --- ChatWindow: the floating chat panel ---
 // Receives an `onClose` callback so the parent (App) can hide it.

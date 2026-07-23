@@ -13,4 +13,4 @@ wheels/
 .env
 
 # Generated data and vector database
-data/chromadb/
+# data/chromadb/   # ← kept in repo so Render can serve the chatbot
