@@ -11,8 +11,13 @@ import {
   Castle,
   PartyPopper,
 } from "lucide-react"
+import heroImage1 from "../src/asset/modern_architectural_photography_of_the_black_star_gate_in_accra_ghana.jpg" // local image for the hero section
+import capeCoastCastle from "../src/asset/cape_coast_castle.jpg"
+import kakumNationalPark from "../src/asset/kakum_national_park.jpg" 
+import ghanaGuideFavicon from "../src/asset/GhanaGuideFavicon.jpg" 
 
-// Data for the top navigation bar items (desktop + mobile)
+
+// Data for the top navigation bar items (desktop + mobile) 
 const navItems = [
   { id: "home", label: "Home", icon: Home },
   { id: "explore", label: "Compass", icon: Compass },
@@ -28,7 +33,7 @@ const sections = [
     description:
       "Walk through the Door of No Return and stand where history shaped the modern world. Our guided tours bring centuries of stories to light.",
     image:
-      "https://lh3.googleusercontent.com/pw/AP1GczPkz9gQ5x6y7R8aBcDeFgHiJkLmNoPqRsTuVwXyZa1234567890abcdefghijklmnopqrstuvwxyz",
+      capeCoastCastle,
     icon: Castle,
   },
   {
@@ -38,7 +43,7 @@ const sections = [
     description:
       "Soar above the rainforest on Africa's only canopy walkway. Spot monkeys, butterflies, and birds in their natural habitat.",
     image:
-      "https://lh3.googleusercontent.com/pw/AP1GczPkz9gQ5x6y7R8aBcDeFgHiJkLmNoPqRsTuVwXyZa1234567890abcdefghijklmnopqrstuvwxyz",
+      kakumNationalPark,
     icon: PartyPopper,
   },
 ]
@@ -210,10 +215,18 @@ function App() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-white font-bold text-sm">GH</span>
+            <div className="w-16 h-16 rounded-full   bg-primary flex items-center justify-center">
+              {/* <span className="text-white font-bold text-sm">GH</span> */}
+              <img src={ghanaGuideFavicon} alt="Ghana Guide Logo" className="w-full h-full object-cover rounded-lg" />
             </div>
-            <span className="font-semibold text-lg text-on-surface">Ghana Guide</span>
+            <div className="">
+              <span className="font-semibold text-3xl text-on-surface">Ghana <span className="font-semibold  text-green-800 ">Guide</span></span>
+              <div className="flex justify-between items-center">
+                <span className="text-[8px] text-red-800">—</span>
+                <span className="text-[8px] text-green-800" >EXPLORE. DISCOVER. EXPERIENCE GHANA</span>
+                <span className="text-[8px] text-green-800">—</span>
+              </div>
+            </div>
           </div>
 
           {/* Desktop nav links (hidden on mobile) */}
@@ -277,7 +290,7 @@ function App() {
       <section className="relative pt-16">
         <div className="relative h-[70vh] min-h-[500px] overflow-hidden">
           <img
-            src="https://lh3.googleusercontent.com/pw/AP1GczPkz9gQ5x6y7R8aBcDeFgHiJkLmNoPqRsTuVwXyZa1234567890abcdefghijklmnopqrstuvwxyz"
+            src={heroImage1}
             alt="Ghana landscape"
             className="w-full h-full object-cover"
           />
