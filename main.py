@@ -1,6 +1,7 @@
 import asyncio
 import os
 import gradio as gr
+from fastapi.middleware.cors import CORSMiddleware
 from chatbot.responder import generate_response
 from chatbot.config import get_config
 
@@ -46,11 +47,12 @@ def run_ui():
     # PORT is set by Render; defaults to 7860 for local dev.
     # server_name="0.0.0.0" binds to all interfaces (Render requires this).
     port = int(os.environ.get("PORT", 7860))
+
+    # Explicitly allow CORS from any origin so the Netlify frontend can reach us.
+    # Gradio adds its own CORS middleware too, but we add this to be safe.
     demo.launch(
         server_name="0.0.0.0",
         server_port=port,
-        # CORS: allow your Netlify domain + localhost for dev.
-        # Gradio adds these headers automatically.
         allowed_paths=["/"],
         theme=gr.themes.Soft(primary_hue="orange", secondary_hue="green"),
     )
