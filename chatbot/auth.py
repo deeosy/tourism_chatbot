@@ -30,11 +30,7 @@ def _get_db():
         return _db
     if not MONGODB_URI:
         raise RuntimeError("MONGODB_URI is not set")
-    _client = MongoClient(
-        MONGODB_URI,
-        tls=True,
-        tlsAllowInvalidCertificates=True,
-    )
+    _client = MongoClient(MONGODB_URI)
     _db = _client["ghana_guide"]
     return _db
 
