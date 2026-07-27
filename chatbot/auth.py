@@ -3,18 +3,12 @@ Authentication module — MongoDB + JWT + bcrypt.
 
 Handles user registration, login, password hashing, and token verification.
 The MongoDB connection string is read from MONGODB_URI env var.
-
-If TLS/SSL handshake fails, automatically falls back to a direct non-SSL
-connection. This works around TLS version mismatches between hosting
-environments (e.g. Render) and MongoDB Atlas.
 """
 
 import os
-import urllib.parse
 from datetime import datetime, timedelta, timezone
 
 import bcrypt
-import dns.resolver
 import jwt
 from pymongo import MongoClient
 
@@ -29,36 +23,6 @@ _client: MongoClient | None = None
 _db = None
 
 
-def _resolve_srv_hosts(srv_hostname: str) -> list[tuple[str, int]]:
-    """Resolve a MongoDB SRV record to (host, port) pairs."""
-    fqdn = f"_mongodb._tcp.{srv_hostname}"
-    answers = dns.resolver.resolve(fqdn, "SRV")
-    return [(str(r.target).rstrip("."), r.port) for r in answers]
-
-
-def _build_direct_uri(srv_uri: str) -> str:
-    """Convert a mongodb+srv:// URI to a mongodb:// URI with ssl=false.
-    
-    Extracts credentials, resolves SRV hosts, and builds a direct
-    non-TLS connection string.
-    """
-    parsed = urllib.parse.urlparse(srv_uri)
-    username = parsed.username or ""
-    password = parsed.password or ""
-    hostname = parsed.hostname
-
-    # Resolve SRV → actual hosts
-    hosts = _resolve_srv_hosts(hostname)
-    hostports = ",".join(f"{h}:{p}" for h, p in hosts)
-
-    auth = ""
-    if username:
-        auth = f"{urllib.parse.quote(username, safe='')}:{urllib.parse.quote(password or '', safe='')}@"
-
-    # Remove existing query params from the SRV URI, use our own
-    return f"mongodb://{auth}{hostports}/?ssl=false&authSource=admin&directConnection=true"
-
-
 def _get_db():
     """Return the database handle, connecting to MongoDB on first call."""
     global _client, _db
@@ -66,20 +30,7 @@ def _get_db():
         return _db
     if not MONGODB_URI:
         raise RuntimeError("MONGODB_URI is not set")
-
-    # Try TLS connection first (the normal path)
-    try:
-        _client = MongoClient(MONGODB_URI, serverSelectionTimeoutMS=10000)
-        _client.admin.command("ping")
-    except Exception as exc:
-        err = str(exc).upper()
-        if "SSL" not in err and "TLS" not in err:
-            raise
-        # SSL handshake failed — fall back to non-SSL direct connection
-        direct = _build_direct_uri(MONGODB_URI)
-        _client = MongoClient(direct, serverSelectionTimeoutMS=10000)
-        _client.admin.command("ping")  # verify it works
-
+    _client = MongoClient(MONGODB_URI)
     _db = _client["ghana_guide"]
     return _db
 
