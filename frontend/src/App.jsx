@@ -1,5 +1,5 @@
 import { useState, useRef } from "react"
-// lucide-react provides SVG icons as React components
+import { useAuth } from "./auth/AuthContext"
 import {
   Menu,
   X,
@@ -10,21 +10,19 @@ import {
   ArrowRight,
   Castle,
   PartyPopper,
+  LogOut,
 } from "lucide-react"
-import heroImage1 from "../src/asset/modern_architectural_photography_of_the_black_star_gate_in_accra_ghana.jpg" // local image for the hero section
+import heroImage1 from "../src/asset/modern_architectural_photography_of_the_black_star_gate_in_accra_ghana.jpg"
 import capeCoastCastle from "../src/asset/cape_coast_castle.jpg"
-import kakumNationalPark from "../src/asset/kakum_national_park.jpg" 
-import ghanaGuideFavicon from "../src/asset/GhanaGuideFavicon.jpg" 
+import kakumNationalPark from "../src/asset/kakum_national_park.jpg"
+import ghanaGuideFavicon from "../src/asset/GhanaGuideFavicon.jpg"
 
-
-// Data for the top navigation bar items (desktop + mobile) 
 const navItems = [
   { id: "home", label: "Home", icon: Home },
   { id: "explore", label: "Compass", icon: Compass },
   { id: "favorites", label: "Hearts", icon: Heart },
 ]
 
-// Data for the featured destination sections shown below the hero
 const sections = [
   {
     id: "castles",
@@ -32,8 +30,7 @@ const sections = [
     subtitle: "A profound journey into history",
     description:
       "Walk through the Door of No Return and stand where history shaped the modern world. Our guided tours bring centuries of stories to light.",
-    image:
-      capeCoastCastle,
+    image: capeCoastCastle,
     icon: Castle,
   },
   {
@@ -42,95 +39,75 @@ const sections = [
     subtitle: "Walk among the canopy",
     description:
       "Soar above the rainforest on Africa's only canopy walkway. Spot monkeys, butterflies, and birds in their natural habitat.",
-    image:
-      kakumNationalPark,
+    image: kakumNationalPark,
     icon: PartyPopper,
   },
 ]
 
-// URL of the Python/Gradio backend streaming endpoint.
-// VITE_API_URL is set in .env for local dev, and in Netlify dashboard for production.
-// Falls back to localhost:7860 when running locally without a .env file.
-const API_BASE = `${import.meta.env.VITE_API_URL || "http://127.0.0.1:7860"}/gradio_api/call/chat_fn`
+// Backend URL for the chat API (FastAPI, not Gradio anymore)
+const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:7860"
 
-// --- ChatWindow: the floating chat panel ---
-// Receives an `onClose` callback so the parent (App) can hide it.
+// --- ChatWindow ---
+// The floating chat panel. Sends messages via POST /api/chat with JWT auth.
 function ChatWindow({ onClose }) {
-  // All messages displayed in the chat, each with a role ("user" | "bot") and text
+  const { token } = useAuth()
+
   const [messages, setMessages] = useState([
     { role: "bot", text: "Akwaaba! Welcome to Ghana. How can I help plan your trip?" },
   ])
-  // Current text in the input box
   const [input, setInput] = useState("")
-  // True while waiting for a backend response
   const [loading, setLoading] = useState(false)
-
-  // Ref instead of state so we can read the latest history inside closures
-  // without triggering re-renders. Stores pairs of [userMessage, botReply].
   const chatHistoryRef = useRef([])
-  // Reference to the active EventSource so we can close it if needed
-  const eventSourceRef = useRef(null)
 
-  // Sends the user's message to the Gradio backend and streams back the reply.
   const handleSend = async () => {
-    // Ignore empty input or if we're already waiting for a response
     if (!input.trim() || loading) return
 
     const userMsg = input.trim()
-    setInput("") // clear the input box immediately
-    // Append the user's message visually
+    setInput("")
     setMessages((prev) => [...prev, { role: "user", text: userMsg }])
     setLoading(true)
 
     try {
-      // Step 1 ― POST to the backend to start a prediction.
-      // The payload is { data: [message, history] } (Gradio's standard format).
-      const resp = await fetch(API_BASE, {
+      const resp = await fetch(`${API_BASE}/api/chat`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: [userMsg, chatHistoryRef.current] }),
-      })
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
-
-      // The response contains an event_id we'll use to read the SSE stream
-      const { event_id } = await resp.json()
-
-      // Step 2 ― Open an SSE (Server-Sent Events) stream to receive the reply.
-      eventSourceRef.current = new EventSource(`${API_BASE}/${event_id}`)
-
-      // Listen for the "complete" event, which carries the final response.
-      // The data is a JSON array: [responseText, additionalData]
-      eventSourceRef.current.addEventListener("complete", (e) => {
-        const data = JSON.parse(e.data)
-        const reply = data[0] // first element is the chatbot's text reply
-        // Save to conversation history so the backend gets context next time
-        chatHistoryRef.current = [...chatHistoryRef.current, [userMsg, reply]]
-        // Add the bot reply to the displayed messages
-        setMessages((prev) => [...prev, { role: "bot", text: reply }])
-        // Clean up the SSE connection
-        eventSourceRef.current.close()
-        setLoading(false)
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          message: userMsg,
+          history: chatHistoryRef.current,
+        }),
       })
 
-      // If the SSE connection fails, just stop loading
-      eventSourceRef.current.onerror = () => {
-        eventSourceRef.current.close()
-        setLoading(false)
+      if (!resp.ok) {
+        if (resp.status === 401) {
+          throw new Error("Session expired. Please log in again.")
+        }
+        throw new Error(`HTTP ${resp.status}`)
       }
-    } catch {
-      // Show a friendly error if the backend is unreachable
-      setMessages((prev) => [...prev, {
-        role: "bot",
-        text: "Sorry, I'm having trouble connecting to the server. Please make sure the backend is running (python main.py) and try again.",
-      }])
+
+      const data = await resp.json()
+      chatHistoryRef.current = [...chatHistoryRef.current, [userMsg, data.reply]]
+      setMessages((prev) => [...prev, { role: "bot", text: data.reply }])
+    } catch (err) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "bot",
+          text: err.message.includes("Session expired")
+            ? err.message
+            : "Sorry, I'm having trouble connecting to the server. Please try again.",
+        },
+      ])
+    } finally {
       setLoading(false)
     }
   }
 
   return (
-    // Chat panel fixed to the bottom-right of the screen
     <div className="fixed bottom-24 right-6 z-50 w-80 sm:w-96 h-[32rem] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-outline-variant">
-      {/* Header bar with title and close button */}
+      {/* Header */}
       <div className="bg-primary text-white px-5 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
@@ -146,22 +123,21 @@ function ChatWindow({ onClose }) {
         </button>
       </div>
 
-      {/* Scrollable message area */}
+      {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-surface">
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             <div
               className={`max-w-[80%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
                 msg.role === "user"
-                  ? "bg-primary text-white rounded-br-md" // user bubbles: green, right-aligned
-                  : "bg-white border border-outline-variant text-on-surface rounded-bl-md" // bot bubbles: white, left-aligned
+                  ? "bg-primary text-white rounded-br-md"
+                  : "bg-white border border-outline-variant text-on-surface rounded-bl-md"
               }`}
             >
               {msg.text}
             </div>
           </div>
         ))}
-        {/* Typing indicator (three bouncing dots) shown while loading */}
         {loading && (
           <div className="flex justify-start">
             <div className="bg-white border border-outline-variant text-on-surface rounded-2xl rounded-bl-md px-4 py-2.5">
@@ -175,7 +151,7 @@ function ChatWindow({ onClose }) {
         )}
       </div>
 
-      {/* Input bar at the bottom */}
+      {/* Input */}
       <div className="border-t border-outline-variant p-3 bg-white">
         <div className="flex gap-2">
           <input
@@ -202,11 +178,9 @@ function ChatWindow({ onClose }) {
 
 // --- App: the root page component ---
 function App() {
-  // Which nav item is currently active ("home", "explore", "favorites")
+  const { user, logout } = useAuth()
   const [activeNav, setActiveNav] = useState("home")
-  // Whether the floating chat window is visible
   const [isChatOpen, setIsChatOpen] = useState(false)
-  // Whether the mobile hamburger menu is open
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
@@ -216,21 +190,22 @@ function App() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="w-16 h-16 rounded-full   bg-primary flex items-center justify-center">
-              {/* <span className="text-white font-bold text-sm">GH</span> */}
+            <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center">
               <img src={ghanaGuideFavicon} alt="Ghana Guide Logo" className="w-full h-full object-cover rounded-lg" />
             </div>
-            <div className="">
-              <span className="font-semibold text-3xl text-on-surface">Ghana <span className="font-semibold  text-green-800 ">Guide</span></span>
+            <div>
+              <span className="font-semibold text-3xl text-on-surface">
+                Ghana <span className="font-semibold text-green-800">Guide</span>
+              </span>
               <div className="flex justify-between items-center">
                 <span className="text-[8px] text-red-800">—</span>
-                <span className="text-[8px] text-green-800" >EXPLORE. DISCOVER. EXPERIENCE GHANA</span>
+                <span className="text-[8px] text-green-800">EXPLORE. DISCOVER. EXPERIENCE GHANA</span>
                 <span className="text-[8px] text-green-800">—</span>
               </div>
             </div>
           </div>
 
-          {/* Desktop nav links (hidden on mobile) */}
+          {/* Desktop nav + user menu */}
           <div className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
               const Icon = item.icon
@@ -249,9 +224,23 @@ function App() {
                 </button>
               )
             })}
+
+            {/* User info + logout */}
+            <div className="ml-3 pl-3 border-l border-outline-variant flex items-center gap-3">
+              <span className="text-sm text-on-surface-variant">
+                {user?.name || user?.email}
+              </span>
+              <button
+                onClick={logout}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+              >
+                <LogOut size={14} />
+                Logout
+              </button>
+            </div>
           </div>
 
-          {/* Hamburger button (visible only on mobile) */}
+          {/* Mobile hamburger */}
           <button
             className="md:hidden p-2 rounded-lg hover:bg-surface-alt transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -260,7 +249,7 @@ function App() {
           </button>
         </div>
 
-        {/* Mobile nav dropdown */}
+        {/* Mobile dropdown */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-outline-variant bg-white px-4 py-3 space-y-1">
             {navItems.map((item) => {
@@ -283,6 +272,17 @@ function App() {
                 </button>
               )
             })}
+            {/* Mobile logout */}
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false)
+                logout()
+              }}
+              className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+            >
+              <LogOut size={16} />
+              Logout ({user?.name || user?.email})
+            </button>
           </div>
         )}
       </nav>
@@ -295,7 +295,6 @@ function App() {
             alt="Ghana landscape"
             className="w-full h-full object-cover"
           />
-          {/* Dark gradient overlay so text is readable */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-12 max-w-4xl mx-auto">
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-3 leading-tight">
@@ -316,13 +315,12 @@ function App() {
         </div>
       </section>
 
-      {/* ===== Featured Destination Sections ===== */}
+      {/* ===== Featured Sections ===== */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 space-y-20">
         {sections.map((section) => {
           const Icon = section.icon
           return (
             <div key={section.id} className="flex flex-col md:flex-row gap-8 items-center">
-              {/* Text content */}
               <div className="flex-1 space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -342,7 +340,6 @@ function App() {
                   Learn more <ArrowRight size={14} />
                 </button>
               </div>
-              {/* Image */}
               <div className="flex-1 w-full">
                 <div className="rounded-2xl overflow-hidden shadow-lg">
                   <img
@@ -357,7 +354,7 @@ function App() {
         })}
       </section>
 
-      {/* ===== Call-to-Action Section (dark background) ===== */}
+      {/* ===== CTA Section ===== */}
       <section className="bg-inverse-surface text-inverse-on-surface py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center space-y-6">
           <h2 className="text-3xl sm:text-4xl font-bold">Ready to explore Ghana?</h2>
@@ -378,11 +375,11 @@ function App() {
       {/* ===== Footer ===== */}
       <footer className="border-t border-outline-variant py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center text-sm text-text-secondary">
-          <p>© 2026 Ghana Tourism Guide. Built with care for travelers.</p>
+          <p>&copy; 2026 Ghana Tourism Guide. Built with care for travelers.</p>
         </div>
       </footer>
 
-      {/* ===== Floating Chat Button (FAB) ===== */}
+      {/* ===== Floating Chat Button ===== */}
       <button
         onClick={() => setIsChatOpen(!isChatOpen)}
         className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary text-white shadow-xl hover:bg-primary-variant transition-all flex items-center justify-center"
@@ -390,7 +387,7 @@ function App() {
         {isChatOpen ? <X size={24} /> : <MessageCircle size={24} />}
       </button>
 
-      {/* ===== Chat Window (conditionally rendered) ===== */}
+      {/* ===== Chat Window ===== */}
       {isChatOpen && <ChatWindow onClose={() => setIsChatOpen(false)} />}
     </div>
   )

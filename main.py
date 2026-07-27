@@ -1,66 +1,138 @@
+"""
+Ghana Tourism Guide — FastAPI backend.
+
+Replaces the old Gradio-only main.py. The React frontend talks to these
+endpoints:
+
+  POST /auth/signup     — create account
+  POST /auth/login      — get JWT token
+  GET  /auth/me         — current user (requires Bearer token)
+  POST /api/chat        — send a message to the AI guide (requires Bearer token)
+"""
+
 import asyncio
 import os
-import gradio as gr
+
+from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+
+from chatbot.auth import (
+    authenticate_user,
+    create_token,
+    create_user,
+    get_user_by_id,
+    verify_token,
+)
 from chatbot.responder import generate_response
-from chatbot.config import get_config
+
+# ---------------------------------------------------------------------------
+# App
+# ---------------------------------------------------------------------------
+
+app = FastAPI(title="Ghana Tourism Guide API")
+
+# Allow the Netlify frontend + localhost for dev.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
-# This function is registered with Gradio's ChatInterface.
-# Gradio calls it when the user sends a message.
-#   message - the user's latest text input
-#   history - list of past [user_message, bot_reply] pairs (used for context)
-async def chat_fn(message: str, history: list) -> str:
-    return await generate_response(message)
+# ---------------------------------------------------------------------------
+# Auth dependency — extracts the current user from the Authorization header.
+# ---------------------------------------------------------------------------
+
+async def get_current_user(authorization: str = Header(...)):
+    """Extract and verify the Bearer token, return the user dict."""
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Missing or invalid token")
+    token = authorization.split(" ", 1)[1]
+    payload = verify_token(token)
+    if payload is None:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    user = get_user_by_id(payload["sub"])
+    if user is None:
+        raise HTTPException(status_code=401, detail="User not found")
+    return user
 
 
-def run_ui():
-    cfg = get_config()
-    # Show the user what mode we're in based on whether an API key is set
-    mode = "AI-powered" if cfg["is_configured"] else "Guide mode (offline)"
-    model_info = f" (model: {cfg['model']})" if cfg["is_configured"] else ""
+# ---------------------------------------------------------------------------
+# Auth routes
+# ---------------------------------------------------------------------------
 
-    # Build the Gradio web interface using Blocks layout
-    with gr.Blocks(title="Ghana Tourism Guide") as demo:
-        # Header text displayed above the chat
-        gr.Markdown(
-            "# Akwaaba! - Your Ghana Travel Guide\n"
-            f"_{mode}{model_info}_\n\n"
-            "Ask me anything about travelling to Ghana - destinations, "
-            "culture, food, itineraries, and practical tips."
-        )
-
-        # ChatInterface wraps a text input, chatbot display, and example prompts
-        chatbot = gr.ChatInterface(
-            fn=chat_fn,
-            title=None,
-            description=None,
-            examples=[
-                "What's there to do in Accra?",
-                "Tell me about Cape Coast Castle",
-                "Plan a 5-day Ghana itinerary",
-                "What food should I try in Ghana?",
-                "How do I get around Ghana?",
-            ],
-        )
-
-    # PORT is set by Render; defaults to 7860 for local dev.
-    # server_name="0.0.0.0" binds to all interfaces (Render requires this).
-    port = int(os.environ.get("PORT", 7860))
-
-    # Explicitly allow CORS from any origin so the Netlify frontend can reach us.
-    # Gradio adds its own CORS middleware too, but we add this to be safe.
-    demo.launch(
-        server_name="0.0.0.0",
-        server_port=port,
-        allowed_paths=["/"],
-        theme=gr.themes.Soft(primary_hue="orange", secondary_hue="green"),
-    )
+class SignUpRequest(BaseModel):
+    name: str
+    email: str
+    password: str
 
 
-def main():
-    run_ui()
+class LoginRequest(BaseModel):
+    email: str
+    password: str
 
+
+@app.post("/auth/signup")
+def signup(body: SignUpRequest):
+    """Register a new account. Returns the created user + JWT token."""
+    try:
+        user = create_user(body.name, body.email, body.password)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    token = create_token(user["id"], user["email"])
+    return {"user": user, "token": token}
+
+
+@app.post("/auth/login")
+def login(body: LoginRequest):
+    """Authenticate and return a JWT token."""
+    user = authenticate_user(body.email, body.password)
+    if user is None:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    token = create_token(user["id"], user["email"])
+    return {"user": user, "token": token}
+
+
+@app.get("/auth/me")
+def me(user=Depends(get_current_user)):
+    """Return the currently authenticated user's profile."""
+    return {"user": user}
+
+
+# ---------------------------------------------------------------------------
+# Chat route — requires a valid JWT token.
+# ---------------------------------------------------------------------------
+
+class ChatRequest(BaseModel):
+    message: str
+    history: list[list[str]] = []
+
+
+@app.post("/api/chat")
+async def chat(body: ChatRequest, user=Depends(get_current_user)):
+    """Send a message to the Ghana tourism AI and get a reply."""
+    reply = await generate_response(body.message)
+    return {"reply": reply}
+
+
+# ---------------------------------------------------------------------------
+# Health check
+# ---------------------------------------------------------------------------
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+
+# ---------------------------------------------------------------------------
+# Entry point for local dev (python main.py)
+# ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    main()
+    import uvicorn
+
+    port = int(os.environ.get("PORT", 7860))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
