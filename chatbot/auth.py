@@ -10,7 +10,6 @@ environments (e.g. Render) and MongoDB Atlas.
 """
 
 import os
-import re
 import urllib.parse
 from datetime import datetime, timedelta, timezone
 
@@ -73,9 +72,8 @@ def _get_db():
         _client = MongoClient(MONGODB_URI, serverSelectionTimeoutMS=10000)
         _client.admin.command("ping")
     except Exception as exc:
-        err = str(exc)
+        err = str(exc).upper()
         if "SSL" not in err and "TLS" not in err:
-            # Not an SSL issue — re-raise
             raise
         # SSL handshake failed — fall back to non-SSL direct connection
         direct = _build_direct_uri(MONGODB_URI)
