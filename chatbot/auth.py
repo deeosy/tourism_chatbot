@@ -6,7 +6,6 @@ The MongoDB connection string is read from MONGODB_URI env var.
 """
 
 import os
-import ssl
 from datetime import datetime, timedelta, timezone
 
 import bcrypt
@@ -24,19 +23,6 @@ _client: MongoClient | None = None
 _db = None
 
 
-def _get_ssl_context():
-    """Create an SSL context that forces TLS 1.2+ and skips cert validation.
-    
-    This works around TLS handshake failures between Render's environment
-    and MongoDB Atlas (TLSV1_ALERT_INTERNAL_ERROR).
-    """
-    ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-    ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
-    ctx.minimum_version = ssl.TLSVersion.TLSv1_2
-    return ctx
-
-
 def _get_db():
     """Return the database handle, connecting to MongoDB on first call."""
     global _client, _db
@@ -48,7 +34,6 @@ def _get_db():
         MONGODB_URI,
         tls=True,
         tlsAllowInvalidCertificates=True,
-        ssl_context=_get_ssl_context(),
     )
     _db = _client["ghana_guide"]
     return _db
