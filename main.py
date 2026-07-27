@@ -33,9 +33,15 @@ from chatbot.responder import generate_response
 app = FastAPI(title="Ghana Tourism Guide API")
 
 # Allow the Netlify frontend + localhost for dev.
+# NOTE: allow_credentials=True means origins must be explicit, not "*"
+ALLOWED_ORIGINS = os.getenv(
+    "ALLOWED_ORIGINS",
+    "http://localhost:5173,http://127.0.0.1:5173,https://ghana-guide.netlify.app",
+).split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -82,6 +88,10 @@ def signup(body: SignUpRequest):
         user = create_user(body.name, body.email, body.password)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail=f"Server config error: {e}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Signup failed: {e}")
     token = create_token(user["id"], user["email"])
     return {"user": user, "token": token}
 
@@ -89,7 +99,12 @@ def signup(body: SignUpRequest):
 @app.post("/auth/login")
 def login(body: LoginRequest):
     """Authenticate and return a JWT token."""
-    user = authenticate_user(body.email, body.password)
+    try:
+        user = authenticate_user(body.email, body.password)
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail=f"Server config error: {e}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Login failed: {e}")
     if user is None:
         raise HTTPException(status_code=401, detail="Invalid email or password")
     token = create_token(user["id"], user["email"])
