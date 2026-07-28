@@ -1,0 +1,313 @@
+[
+  {
+    "attraction": "Kotoka International Airport",
+    "region": "Greater Accra",
+    "type": "transport",
+    "description": "Ghana's main international airport, located in Accra. Handles flights from major airlines including Delta, British Airways, Emirates, Ethiopian Airlines, KLM, Turkish Airlines, and Africa World Airlines.",
+    "details": "Has currency exchange booths, MTN SIM card kiosk (opens 6am-11pm), taxi stands, and car rental services. Uber/Bolt pickups available from departures level. Allow 2 hours for international departures.",
+    "travel_times": {},
+    "practical": {
+      "hours": "Open 24 hours",
+      "price_range": "N/A (airport)"
+    },
+    "website": ""
+  },
+  {
+    "attraction": "Jamestown",
+    "region": "Greater Accra",
+    "type": "historical",
+    "description": "Accra's oldest district, founded in the 17th century by the British as Fort James. Known for the Jamestown Lighthouse, colonial architecture, and bustling fishing harbor.",
+    "details": "The lighthouse (built 1930s) offers panoramic views of Accra — climb is about 100 steps. Best visited early morning (6-7am) when fishing canoes return. Ussher Fort Museum nearby documents Ghana's independence history. The area can feel rough; keep valuables hidden and go with a guide.",
+    "travel_times": {
+      "from_kotoka_airport": "25-40 min by car (12km)",
+      "from_osu": "10-15 min by car (4km)",
+      "from_labadi": "20-30 min by car (8km)"
+    },
+    "practical": {
+      "hours": "Lighthouse open 9am-5pm daily",
+      "price_range": "Lighthouse entry: GHS 20-40 for tourists"
+    },
+    "website": ""
+  },
+  {
+    "attraction": "Labadi Beach (La Pleasure Beach)",
+    "region": "Greater Accra",
+    "type": "beach",
+    "description": "The most popular beach in Accra, located in the La suburb. Lively on weekends with live music, horse riding, and food vendors. Quieter on weekdays.",
+    "details": "Entry fee charged at the gate. Vendors sell fresh coconut, grilled tilapia, kelewele, and drinks. Horse riding available for GHS 50-100. Jetski rentals available. Avoid walking alone on the beach after dark. Weekends are very crowded with loud music.",
+    "travel_times": {
+      "from_central_accra": "20-30 min by car (7km)",
+      "from_kotoka_airport": "15-20 min by car (6km)"
+    },
+    "practical": {
+      "hours": "6am-8pm daily",
+      "price_range": "Entry fee: GHS 10-20 per person; Sunbed: GHS 30-50"
+    },
+    "website": ""
+  },
+  {
+    "attraction": "Kwame Nkrumah Mausoleum",
+    "region": "Greater Accra",
+    "type": "historical",
+    "description": "Memorial site dedicated to Ghana's first president, Kwame Nkrumah, located in downtown Accra. The mausoleum houses his remains and a museum of personal effects.",
+    "details": "Well-maintained grounds with a museum displaying Nkrumah's personal items, photographs, and independence-era artifacts. The statue of Nkrumah outside is a popular photo spot. Takes about 45-60 minutes to visit. Guided tours available.",
+    "travel_times": {
+      "from_jamestown": "5-10 min walk",
+      "from_osu": "10-15 min by car (3km)"
+    },
+    "practical": {
+      "hours": "9am-5pm daily",
+      "price_range": "Entry: GHS 30-50 for adults, GHS 10-20 for students"
+    },
+    "website": ""
+  },
+  {
+    "attraction": "Cape Coast Castle",
+    "region": "Central Region",
+    "type": "historical",
+    "description": "One of about 40 'slave castles' built on the Gold Coast. A UNESCO World Heritage site. The dungeons held enslaved Africans before the Middle Passage. The 'Door of No Return' is the exit point to waiting ships.",
+    "details": "Takes about 1.5-2 hours for the full guided tour. The museum covers the history of the transatlantic slave trade and Ghanaian heritage. Go early at 9am to avoid crowds and heat. Bring water. The tour is emotionally heavy — prepare yourself. Photography allowed in most areas. Guides are included in entry price and are very knowledgeable.",
+    "travel_times": {
+      "from_accra": "2.5-3 hours by car (150km) via N1 highway",
+      "from_cape_coast_town": "5 min walk from town center",
+      "from_kakum": "45 min by car (30km)"
+    },
+    "practical": {
+      "hours": "9am-5pm daily",
+      "price_range": "Entry including guide: GHS 60-100 for adults, GHS 30 for students"
+    },
+    "website": "Visit ghanamuseums.org for current prices"
+  },
+  {
+    "attraction": "Elmina Castle (St. George's Castle)",
+    "region": "Central Region",
+    "type": "historical",
+    "description": "Built by the Portuguese in 1482, this is the oldest European building in existence south of the Sahara. Later captured by the Dutch. Used as a holding point for enslaved Africans.",
+    "details": "Oldest European building in sub-Saharan Africa. The guided tour is excellent — covers Portuguese and Dutch history, the slave trade, and the town's fishing harbor. Smaller and less crowded than Cape Coast Castle. Can be combined with a walk through Elmina fishing harbor afterward.",
+    "travel_times": {
+      "from_cape_coast": "10-15 min by car (6km)",
+      "from_accra": "2.5-3 hours by car (155km)"
+    },
+    "practical": {
+      "hours": "9am-5pm daily",
+      "price_range": "Entry including guide: GHS 50-80 for adults"
+    },
+    "website": ""
+  },
+  {
+    "attraction": "Kakum National Park",
+    "region": "Central Region",
+    "type": "nature",
+    "description": "A 375 sq km rainforest reserve famous for the Canopy Walkway — seven rope bridges suspended 40m above the forest floor. Also home to forest elephants, bongo antelopes, and over 300 bird species.",
+    "details": "The canopy walkway is 350m long total, across 7 bridges. Go at 6am opening for best wildlife spotting and to avoid crowds. The walkway takes about 45 minutes. There's also a forest hiking trail (2-3 hours). Guides available. Wear hiking shoes. Mosquito repellent essential. Can get foggy early morning — wait for it to clear for better views.",
+    "travel_times": {
+      "from_cape_coast": "45 min by car (30km)",
+      "from_accra": "3-3.5 hours by car (170km)",
+      "from_elmina": "40 min by car (25km)"
+    },
+    "practical": {
+      "hours": "6am-5pm daily",
+      "price_range": "Entry GHS 60-80, Canopy walkway additional GHS 20-30, Guide GHS 50-100"
+    },
+    "website": ""
+  },
+  {
+    "attraction": "Manhyia Palace Museum",
+    "region": "Ashanti Region",
+    "type": "cultural",
+    "description": "The official seat of the Asantehene (the Ashanti king). Contains a museum of Ashanti history, royal artifacts, and ceremonial items.",
+    "details": "Excellent overview of Ashanti history, the British-Ashanti wars, the Golden Stool, and royal regalia. The museum is housed in the former palace building. Takes about 1-1.5 hours. Photography not allowed inside. If visiting on Sunday, the Asantehene's procession (Akwasidae festival, every 6 weeks) is spectacular.",
+    "travel_times": {
+      "from_kejetia_market": "10 min by car (3km)",
+      "from_accra": "4-5 hours by car (250km) via N6 highway",
+      "from_kuamsi_airport": "15-20 min by car (6km)"
+    },
+    "practical": {
+      "hours": "9am-5pm daily",
+      "price_range": "Entry: GHS 50-80 for adults, GHS 20 for students"
+    },
+    "website": ""
+  },
+  {
+    "attraction": "Kejetia Market",
+    "region": "Ashanti Region",
+    "type": "cultural",
+    "description": "One of the largest open-air markets in West Africa, located in central Kumasi. Thousands of stalls selling everything from food to electronics to traditional fabrics.",
+    "details": "Over 10,000 traders occupy this sprawling market. Go with a local guide to navigate. Be prepared for crowds, narrow alleys, and negotiation. Best for kente cloth, smocks, beads, shea butter, black soap, and spices. Keep valuables secure. Watch for pickpockets in crowded areas. Open every day but most vibrant in the morning.",
+    "travel_times": {
+      "from_manhyia_palace": "10 min by car (3km)",
+      "from_kumasi_airport": "10-15 min by car (4km)"
+    },
+    "practical": {
+      "hours": "6am-6pm daily (some stalls open later)",
+      "price_range": "Cost varies — bargain aggressively, expect to pay 30-50% of initial asking price"
+    },
+    "website": ""
+  },
+  {
+    "attraction": "Bonwire Kente Village",
+    "region": "Ashanti Region",
+    "type": "cultural",
+    "description": "The spiritual home of kente cloth weaving, located about 20km from Kumasi. Master weavers operate traditional looms, creating intricate hand-woven kente in vibrant patterns.",
+    "details": "Watch master weavers at work on traditional looms. Each pattern has symbolic meaning. Prices are much better than in Accra. A single piece can take days to weeks to complete depending on complexity. Quality kente is not cheap and shouldn't be. Allow 1-2 hours. Purchase directly from weavers. Ask about the meaning of patterns.",
+    "travel_times": {
+      "from_kumasi": "30-40 min by car (20km)",
+      "from_kejetia_market": "30-40 min by car (20km)"
+    },
+    "practical": {
+      "hours": "8am-5pm daily",
+      "price_range": "Scarves GHS 100-300, full cloth pieces GHS 500-2000+"
+    },
+    "website": ""
+  },
+  {
+    "attraction": "Wli Falls",
+    "region": "Volta Region",
+    "type": "nature",
+    "description": "The highest waterfall in West Africa at approximately 80 meters, located in the Volta Region near the Togo border. Set in a lush forest with a biodiverse ecosystem.",
+    "details": "Two tiers — lower falls (easier, 30 min hike from entrance) and upper falls (more challenging, 2-hour steep hike). The lower falls pool is swimmable. Best in the dry season (Nov-Mar, Aug) when the water is clear. Rainy season makes the water muddy and the path slippery. Hire a guide at the entrance. Bring water and insect repellent.",
+    "travel_times": {
+      "from_ho": "2-2.5 hours by car (80km) — road can be rough in sections",
+      "from_accra": "4-5 hours by car (220km) via Akosombo",
+      "from_tafi_atome": "30-45 min by car (25km)"
+    },
+    "practical": {
+      "hours": "7am-5pm daily",
+      "price_range": "Entry GHS 30-50, Guide fee GHS 50-100 (optional but recommended)"
+    },
+    "website": ""
+  },
+  {
+    "attraction": "Mount Afadjato",
+    "region": "Volta Region",
+    "type": "nature",
+    "description": "The highest mountain in Ghana at 885 meters above sea level. Located near the Togo border in the Volta Region. Popular hiking destination.",
+    "details": "The hike takes 2-3 hours up and 1.5-2 hours down. Moderate difficulty — suitable for most fitness levels with breaks. Hire a guide from the village (mandatory). The summit offers views of Ghana and Togo. Go early morning (6-7am) to avoid midday heat. Wear hiking shoes, bring at least 1.5L water per person.",
+    "travel_times": {
+      "from_ho": "2-2.5 hours by car (70km)",
+      "from_wli_falls": "30 min by car (15km)",
+      "from_accra": "4-5 hours by car (210km)"
+    },
+    "practical": {
+      "hours": "Best started before 8am",
+      "price_range": "Guide fee: GHS 100-200 (mandatory), Village entry fee: GHS 10-20"
+    },
+    "website": ""
+  },
+  {
+    "attraction": "Tafi Atome Monkey Sanctuary",
+    "region": "Volta Region",
+    "type": "nature",
+    "description": "Community-run conservation project where Mona monkeys roam freely. Visitors can feed and interact with the monkeys in their natural habitat.",
+    "details": "The sanctuary is run by the local community. Mona monkeys come down from the trees to eat bananas from visitors' hands. The monkeys are wild — follow the guide's instructions. Takes about 45 min to 1 hour. A portion of the entry fee goes toward community development. Combined visit with Wli Falls makes a good day trip from Ho.",
+    "travel_times": {
+      "from_ho": "45 min-1 hour by car (40km)",
+      "from_wli_falls": "30-45 min by car (25km)"
+    },
+    "practical": {
+      "hours": "7am-5pm daily",
+      "price_range": "Entry: GHS 30-50, Bananas for feeding: GHS 5-10"
+    },
+    "website": ""
+  },
+  {
+    "attraction": "Mole National Park",
+    "region": "Northern Region",
+    "type": "nature",
+    "description": "Ghana's premier safari destination. Home to elephants, antelopes, baboons, warthogs, buffalo, and (rarely) lions and leopards. Approximately 4,840 sq km of savannah.",
+    "details": "Walking safaris with armed guides (thrilling — tracking elephants on foot) or driving safaris. Best sightings at the waterhole near the lodge at dawn and dusk. Book Mole Lodge well in advance. The dry season (Nov-Mar) is best when animals gather at water sources. Bring binoculars, mosquito repellent, and neutral-colored clothing.",
+    "travel_times": {
+      "from_tamale": "2-2.5 hours by car (125km) — road is mixed paved and unpaved",
+      "from_accra": "12 hours by STC bus, or 1 hour flight Accra-Tamale then 2 hours drive",
+      "from_larabanga": "15 min by car (8km)"
+    },
+    "practical": {
+      "hours": "Park open 6am-6pm, Safaris at dawn (6am) and late afternoon (3pm)",
+      "price_range": "Park entry GHS 100-150, Walking safari guide GHS 150-250, Driving safari GHS 200-400, Mole Lodge from $120/night"
+    },
+    "website": ""
+  },
+  {
+    "attraction": "Larabanga Mosque",
+    "region": "Northern Region",
+    "type": "cultural",
+    "description": "One of the oldest mosques in West Africa, built in the Sudano-Sahelian architectural style, dating from the 15th century. Often called 'the Mecca of West Africa.'",
+    "details": "Built of mud and timber in the traditional Sudanese architectural style. The mosque has been rebuilt multiple times — the current structure dates largely from the 1970s restoration. Ask permission (and usually a small donation) before photographing. Women should dress modestly (head covering recommended). Visiting can be combined with a trip to Mole National Park.",
+    "travel_times": {
+      "from_mole_park": "15 min by car (8km)",
+      "from_tamale": "2-2.5 hours by car (120km)"
+    },
+    "practical": {
+      "hours": "Open daily, best visited 8am-5pm",
+      "price_range": "Donation requested for photography: GHS 10-20"
+    },
+    "website": ""
+  },
+  {
+    "attraction": "Nzulezu Stilt Village",
+    "region": "Western Region",
+    "type": "cultural",
+    "description": "A UNESCO-protected village built entirely on stilts over Lake Tadane. Inhabited for over 500 years by the Anlo-Ewe people.",
+    "details": "You reach the village by canoe (30 min paddle from the lake shore). About 500 people live in the village. The community is welcoming to visitors. Tread respectfully — this is a real community, not a theme park. The village has a small guesthouse if you want to stay overnight. Photography should be done with permission.",
+    "travel_times": {
+      "from_axim": "1 hour by car (45km)",
+      "from_busua": "1-1.5 hours by car (55km)",
+      "from_accra": "5-6 hours by car (340km)"
+    },
+    "practical": {
+      "hours": "Best visited 9am-4pm",
+      "price_range": "Canoe fee: GHS 100-200 per person, Village entry: GHS 20-40"
+    },
+    "website": ""
+  },
+  {
+    "attraction": "Busua Beach",
+    "region": "Western Region",
+    "type": "beach",
+    "description": "A laid-back beach town with great surf, fresh seafood, and a backpacker vibe. Quieter and more relaxed than Accra's beaches.",
+    "details": "Known for great surfing — rent boards on the beach for GHS 50-100 per hour. Fresh lobster and grilled fish from beachfront restaurants. Busua Inn and Busua Beach Resort are popular accommodation options. The town has a relaxed, backpacker atmosphere. Fewer vendors than Labadi. Safe to swim.",
+    "travel_times": {
+      "from_axim": "20 min by car (12km)",
+      "from_takoradi": "45 min by car (30km)",
+      "from_accra": "4-5 hours by car (250km)"
+    },
+    "practical": {
+      "hours": "Beach always accessible",
+      "price_range": "Budget guesthouses from $15/night, Mid-range resorts from $50/night"
+    },
+    "website": ""
+  },
+  {
+    "attraction": "Akosombo Dam & Lake Volta",
+    "region": "Eastern Region",
+    "type": "nature",
+    "description": "The Akosombo Dam created Lake Volta — one of the world's largest man-made lakes by surface area (8,502 sq km). The dam generates most of Ghana's electricity.",
+    "details": "Lake cruises are beautiful late afternoon. The dam itself is visible from a viewpoint. Boat trips available — can be arranged through Akosombo Continental Hotel or local operators. Lake Volta Resort offers accommodation. The Volta River Estates also runs boat trips. The area is popular for weekend getaways from Accra.",
+    "travel_times": {
+      "from_accra": "1.5-2 hours by car (80km) via the Akosombo road",
+      "from_koforidua": "45 min by car (35km)"
+    },
+    "practical": {
+      "hours": "Dam viewpoint open daylight hours",
+      "price_range": "Boat tours GHS 300-600 per group, Lake cruise GHS 100-200 per person"
+    },
+    "website": ""
+  },
+  {
+    "attraction": "Boti Falls",
+    "region": "Eastern Region",
+    "type": "nature",
+    "description": "A twin waterfall (male and female) in a forest setting near Koforidua. The two falls flow side by side and merge at the bottom.",
+    "details": "The falls are about 45 minutes from Koforidua. A guide is recommended — the path can be slippery. Best visited in the rainy season (April-July, Sep-Oct) when water flow is strong. In the dry season, the falls reduce significantly. There's a viewing platform and a pool at the base. Local food vendors sell near the entrance.",
+    "travel_times": {
+      "from_koforidua": "45 min by car (25km)",
+      "from_akosombo": "1 hour by car (40km)",
+      "from_accra": "2-2.5 hours by car (110km)"
+    },
+    "practical": {
+      "hours": "7am-5pm daily",
+      "price_range": "Entry GHS 20-40, Guide fee GHS 50-100"
+    },
+    "website": ""
+  }
+]

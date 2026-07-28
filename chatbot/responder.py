@@ -99,17 +99,19 @@ def _check_practical(text: str) -> str | None:
 
 
 # ----- Main entry point -----
-# Called by Gradio when the user submits a message.
+# Called by FastAPI when the user submits a message.
 # Tries strategies in order of quality:
-#   1. LLM (OpenAI) with RAG context  ─ best answer
-#   2. Simple intent matching          ─ fast for greetings
-#   3. Itinerary builder               ─ for trip planning
-#   4. Region matching                 ─ for destination questions
-#   5. Topic matching                  ─ for food/visa/etc.
-#   6. Practical info                  ─ for costs/SIM cards
-#   7. Web search (DuckDuckGo)        ─ fallback for unknown queries
-#   8. Generic "tell me more" prompt   ─ last resort
-async def generate_response(message: str) -> str:
+#   1. LLM (OpenAI) with RAG context + chat history  ─ best answer
+#   2. Simple intent matching                          ─ fast for greetings
+#   3. Itinerary builder                               ─ for trip planning
+#   4. Region matching                                 ─ for destination questions
+#   5. Topic matching                                  ─ for food/visa/etc.
+#   6. Practical info                                  ─ for costs/SIM cards
+#   7. Web search (DuckDuckGo)                        ─ fallback for unknown queries
+#   8. Generic "tell me more" prompt                   ─ last resort
+async def generate_response(
+    message: str, history: list[list[str]] | None = None
+) -> str:
     text = message.strip()
 
     if not text:
@@ -117,7 +119,7 @@ async def generate_response(message: str) -> str:
 
     # 1. If an OpenAI API key is configured, use the LLM (best quality)
     if _is_llm_configured():
-        llm_reply = await generate_llm_response(text)
+        llm_reply = await generate_llm_response(text, history=history)
         if llm_reply:
             return llm_reply
 

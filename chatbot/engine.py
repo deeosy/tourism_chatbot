@@ -461,11 +461,43 @@ ITINERARY_ADVICE = (
 )
 
 
+# Try to extract a date range from text like "28th to 31st of August" or "August 28-31"
+# Returns (start_date_str, end_date_str, day_count) or (None, None, None)
+def _parse_date_range(text: str):
+    months = {
+        "january": 1, "february": 2, "march": 3, "april": 4, "may": 5, "june": 6,
+        "july": 7, "august": 8, "aug": 8, "september": 9, "october": 10,
+        "november": 11, "december": 12,
+    }
+
+    # Try patterns like "28th to 31st of August" or "28 to 31 of August"
+    m = re.search(r"(\d{1,2})(?:st|nd|rd|th)?\s*(?:to|-|–)\s*(\d{1,2})(?:st|nd|rd|th)?\s*(?:of\s+)?([a-z]+)", text.lower())
+    if m:
+        day1, day2, month_name = int(m.group(1)), int(m.group(2)), m.group(3)
+        month_num = months.get(month_name)
+        if month_num and 1 <= day1 <= 31 and 1 <= day2 <= 31 and day2 >= day1:
+            return (f"{month_name.title()} {day1}", f"{month_name.title()} {day2}", (day2 - day1) + 1)
+
+    # Try patterns like "August 28-31" or "Aug 28 - 31"
+    m = re.search(r"([a-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?\s*(?:to|-|–)\s*(\d{1,2})(?:st|nd|rd|th)?", text.lower())
+    if m:
+        month_name, day1, day2 = m.group(1), int(m.group(2)), int(m.group(3))
+        month_num = months.get(month_name)
+        if month_num and 1 <= day1 <= 31 and 1 <= day2 <= 31 and day2 >= day1:
+            return (f"{month_name.title()} {day1}", f"{month_name.title()} {day2}", (day2 - day1) + 1)
+
+    return (None, None, None)
+
+
 # Generates a personalised itinerary based on the user's message.
-# Extracts day count, number of people, and interests from the text.
+# Extracts date range, day count, number of people, and interests from the text.
 def get_itinerary_reply(message: str) -> str:
     days = re.findall(r"(\d+)\s*days?", message.lower())
     people = re.findall(r"(\d+)\s*(people|persons?|of us|travellers?)", message.lower())
+
+    # Try date range first — more accurate than "X days"
+    date_start, date_end, date_day_count = _parse_date_range(message)
+    day_count = date_day_count or (int(days[0]) if days else None)
 
     interests = []
     interest_keywords = {
@@ -487,12 +519,12 @@ def get_itinerary_reply(message: str) -> str:
         if any(k in message.lower() for k in keywords):
             interests.append(category)
 
-    day_count = int(days[0]) if days else None
+    date_info = f" ({date_start} to {date_end})" if date_start else ""
 
     if day_count:
         if day_count <= 3:
             return (
-                f"With {day_count} days, I'd focus on **Accra and Cape Coast** - "
+                f"With {day_count} days{date_info}, I'd focus on **Accra and Cape Coast** - "
                 "they're close enough to avoid wasting time on the road.\n\n"
                 "**Day 1: Accra** - arrive, settle in, explore Jamestown and Osu\n"
                 "**Day 2: Cape Coast** - Cape Coast Castle + Kakum canopy walkway\n"
@@ -501,7 +533,7 @@ def get_itinerary_reply(message: str) -> str:
             )
         elif day_count <= 7:
             return (
-                f"Great - {day_count} days gives you room for **Accra, Cape Coast, and Kumasi**.\n\n"
+                f"Great - {day_count} days{date_info} gives you room for **Accra, Cape Coast, and Kumasi**.\n\n"
                 f"**Day 1:** Arrive Accra, settle in\n"
                 f"**Day 2:** Accra - Jamestown, Osu, independence square\n"
                 f"**Day 3:** Cape Coast - castle tour + Elmina\n"
@@ -513,7 +545,7 @@ def get_itinerary_reply(message: str) -> str:
             )
         else:
             return (
-                f"{day_count} days is plenty for a thorough Ghana trip! "
+                f"{day_count} days{date_info} is plenty for a thorough Ghana trip! "
                 "You can add the **Volta Region** or **Mole National Park**.\n\n"
                 "Would you like me to focus more on nature, history, or a mix? "
                 "Tell me your preferences and I'll build a detailed plan."

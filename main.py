@@ -129,7 +129,7 @@ class ChatRequest(BaseModel):
 @app.post("/api/chat")
 async def chat(body: ChatRequest, user=Depends(get_current_user)):
     """Send a message to the Ghana tourism AI and get a reply."""
-    reply = await generate_response(body.message)
+    reply = await generate_response(body.message, history=body.history)
     return {"reply": reply}
 
 
