@@ -310,4 +310,17 @@
     },
     "website": ""
   }
+  {
+    "attraction": "Region Travel Times Overview",
+    "region": "All Regions",
+    "type": "reference",
+    "description": "Driving times between major regions and cities in Ghana. Road travel is slower than distances suggest due to traffic, road conditions, and speed limits.",
+    "details": "Use these times to plan realistic itineraries:\n- Accra to Cape Coast: 2.5-3 hours (150km, N1 highway)\n- Accra to Kumasi: 4-5 hours (250km, N6 highway)\n- Accra to Ho (Volta Region): 3-4 hours (160km, motorway then good road)\n- Accra to Akosombo: 1.5-2 hours (80km)\n- Accra to Takoradi (Western Region): 3.5-4 hours (220km, N1 highway)\n- Accra to Tamale (Northern Region): 1 hour flight OR 12 hours by STC bus\n- Cape Coast to Kakum: 45 min (30km)\n- Cape Coast to Elmina: 10-15 min (6km)\n- Cape Coast to Kumasi: 5-6 hours (300km)\n- Ho to Wli Falls: 2-2.5 hours (80km, road rough in sections)\n- Ho to Tafi Atome: 45 min-1 hour (40km)\n- Ho to Mount Afadjato: 2-2.5 hours (70km)\n- Wli Falls to Mount Afadjato: 30 min (15km)\n- Wli Falls to Tafi Atome: 30-45 min (25km)\n- Kumasi to Bonwire: 30-40 min (20km)\n- Kumasi to Accra: 4-5 hours (250km)\n- Tamale to Mole National Park: 2-2.5 hours (125km, mixed road)\n- Mole to Larabanga Mosque: 15 min (8km)",
+    "travel_times": {},
+    "practical": {
+      "hours": "",
+      "price_range": ""
+    },
+    "website": ""
+  }
 ]
