@@ -23,7 +23,11 @@ def _inject_date(prompt: str) -> str:
     today = datetime.now().strftime("%A, %B %d, %Y")
     return (
         f"Today's date is {today}. When the user mentions dates or seasons, "
-        "use today as your reference point.\n\n"
+        f"use today as your reference point.\n\n"
+        f"IMPORTANT: When the user's message includes a 'Relevant information from "
+        f"the knowledge base' section, that data is verified and accurate — especially "
+        f"travel times, distances, prices, and opening hours. ALWAYS use that "
+        f"information over your own training data when there is any conflict.\n\n"
         f"{prompt}"
     )
 
